@@ -1,3 +1,5 @@
+<img width="966" height="174" alt="Screenshot 2026-03-11 at 16 47 47" src="https://github.com/user-attachments/assets/6416cf6c-ae89-43bc-af77-f67eb90da82b" />
+
 # aipoor
 
 `aipoor` is for people with premium-agent ambitions and very normal-agent budgets.
