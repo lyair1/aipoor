@@ -14,6 +14,36 @@ It reads the local state those CLIs already store, extracts the useful context, 
 
 Not glamorous. Extremely useful.
 
+## Quick Start
+
+Install it:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yairlevi/aipoor/main/install.sh | sh
+```
+
+Then, inside the project you are working on, create a handoff:
+
+```bash
+aipoor sync codex claude
+```
+
+What happens next:
+
+1. `aipoor` reads the current project context.
+2. It builds a handoff bundle for the target agent.
+3. It saves that bundle under `~/.aipoor/bundles/`.
+4. It copies the handoff text to your clipboard.
+5. You open the next agent, paste, and continue.
+
+Example switch:
+
+```bash
+cd /Users/you/src/project
+aipoor sync claude gemini
+# now open Gemini CLI and paste
+```
+
 ## Why This CLI Exists
 
 This tool exists because the real-world workflow looks like this:
@@ -33,18 +63,19 @@ So here we are.
 When you run a command like this:
 
 ```bash
-aipoor sync claude gemini --project /Users/you/src/my-project
+aipoor sync claude gemini
 ```
 
 `aipoor` will:
 
-1. Find the latest relevant local session for the source CLI.
-2. Extract recent transcript messages.
-3. Pull in persistent memory or instruction files when available.
-4. Include useful config and skill directory references.
-5. Generate a markdown handoff bundle for the target CLI.
-6. Save that bundle under `~/.aipoor/bundles/`.
-7. Copy the same bundle to your clipboard.
+1. Use the folder you are currently in as the project.
+2. Find the latest relevant local session for the source CLI.
+3. Extract recent transcript messages.
+4. Pull in persistent memory or instruction files when available.
+5. Include useful config and skill directory references.
+6. Generate a markdown handoff bundle for the target CLI.
+7. Save that bundle under `~/.aipoor/bundles/`.
+8. Copy the same bundle to your clipboard.
 
 Then you open the next agent, paste, and continue.
 
@@ -127,15 +158,23 @@ If one of them is missing, you will know immediately.
 The main command shape is:
 
 ```bash
-aipoor sync <from> <to> --project /absolute/path/to/project
+aipoor sync <from> <to>
 ```
+
+By default, `aipoor` uses the folder you are running the command from.
 
 Examples:
 
 ```bash
-aipoor sync codex claude --project /Users/yairlevi/src/aipoor
-aipoor sync claude gemini --project /Users/yairlevi/src/betterClaw
-aipoor sync gemini codex --project /Users/yairlevi/src/escape-market
+cd /Users/yairlevi/src/aipoor && aipoor sync codex claude
+cd /Users/yairlevi/src/betterClaw && aipoor sync claude gemini
+cd /Users/yairlevi/src/escape-market && aipoor sync gemini codex
+```
+
+If you want to override that, you can still do:
+
+```bash
+aipoor sync claude gemini --project /Users/you/src/project
 ```
 
 ### Step 3: Let `aipoor` build the handoff
@@ -167,7 +206,8 @@ Here is the intended workflow:
 3. Run:
 
 ```bash
-aipoor sync codex claude --project /Users/you/src/project
+cd /Users/you/src/project
+aipoor sync codex claude
 ```
 
 4. Open `claude`
@@ -177,7 +217,8 @@ aipoor sync codex claude --project /Users/you/src/project
 8. Run:
 
 ```bash
-aipoor sync claude gemini --project /Users/you/src/project
+cd /Users/you/src/project
+aipoor sync claude gemini
 ```
 
 9. Open `gemini`
@@ -192,7 +233,7 @@ Set your default project:
 aipoor setup --project "$(pwd)"
 ```
 
-Use the default project later:
+Use the current folder as the project:
 
 ```bash
 aipoor sync codex claude
@@ -201,7 +242,13 @@ aipoor sync codex claude
 Include more recent transcript messages:
 
 ```bash
-aipoor sync claude gemini --project /Users/you/src/project --messages 20
+aipoor sync claude gemini --messages 20
+```
+
+Override the folder explicitly:
+
+```bash
+aipoor sync claude gemini --project /Users/you/src/project
 ```
 
 Print the generated handoff to stdout too:

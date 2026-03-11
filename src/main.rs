@@ -127,12 +127,12 @@ fn cmd_sync(
     }
 
     let config = AppConfig::load()?;
-    let project = config.resolve_project(project_arg);
-    let context = source.collect_context(project.as_deref(), messages)?;
+    let project = config.resolve_project(project_arg)?;
+    let context = source.collect_context(Some(project.as_path()), messages)?;
     let bundle = HandoffBundle {
         source,
         target,
-        project: project.clone(),
+        project: Some(project.clone()),
         generated_at: Local::now(),
         session_path: context.session_path,
         recent_messages: context.messages,
@@ -150,9 +150,7 @@ fn cmd_sync(
     } else {
         println!("Copied handoff bundle to clipboard.");
         println!("Saved bundle to {}", bundle_path.display());
-        if let Some(project) = project {
-            println!("Project: {}", project.display());
-        }
+        println!("Project: {}", project.display());
         println!("Use it by pasting into {}.", target.display_name());
     }
 

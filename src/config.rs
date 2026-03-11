@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::{Path, PathBuf};
 
-use anyhow::{Context, Result};
+use anyhow::{Context, Result, bail};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -40,9 +40,20 @@ impl AppConfig {
         Ok(path)
     }
 
-    pub fn resolve_project(&self, project: Option<&Path>) -> Option<PathBuf> {
-        project
-            .map(Path::to_path_buf)
-            .or_else(|| self.default_project.clone())
+    pub fn resolve_project(&self, project: Option<&Path>) -> Result<PathBuf> {
+        if let Some(project) = project {
+            return Ok(project.to_path_buf());
+        }
+
+        let current_dir = std::env::current_dir().context("failed to resolve current directory")?;
+        if current_dir.exists() {
+            return Ok(current_dir);
+        }
+
+        if let Some(project) = &self.default_project {
+            return Ok(project.clone());
+        }
+
+        bail!("failed to resolve project directory")
     }
 }
