@@ -93,7 +93,8 @@ Right now it supports:
 
 ### Recommended install with `curl`
 
-Once the repo and releases are published, install it with:
+If a GitHub release exists, this installer downloads the matching binary.
+If no release exists yet, it falls back to `cargo install --git` when Cargo is available:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/lyair1/aipoor/main/install.sh | sh
@@ -102,9 +103,10 @@ curl -fsSL https://raw.githubusercontent.com/lyair1/aipoor/main/install.sh | sh
 What this does:
 
 1. Downloads the install script.
-2. Fetches the correct binary for your machine from GitHub Releases.
-3. Installs `aipoor` into your local bin directory.
-4. Runs the setup command for you.
+2. Tries to fetch the correct binary for your machine from GitHub Releases.
+3. Falls back to building from source with Cargo when no release is published.
+4. Installs `aipoor` into your local bin directory.
+5. Runs the setup command for you.
 
 ### Install from source
 

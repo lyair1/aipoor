@@ -5,6 +5,19 @@ BIN_NAME="aipoor"
 REPO="${GITHUB_REPO:-lyair1/aipoor}"
 VERSION="${VERSION:-}"
 
+install_from_git() {
+  if ! command -v cargo >/dev/null 2>&1; then
+    echo "No GitHub release found for $REPO, and cargo is not installed for source fallback." >&2
+    echo "Install Rust/Cargo or publish a GitHub release for $REPO." >&2
+    exit 1
+  fi
+
+  echo "No GitHub release found for $REPO. Installing from source with cargo." >&2
+  cargo install --git "https://github.com/$REPO.git" --locked "$BIN_NAME"
+  "$HOME/.cargo/bin/$BIN_NAME" setup --project "$(pwd)"
+  exit 0
+}
+
 if [ -f "./Cargo.toml" ] && [ -d "./src" ]; then
   cargo install --path .
   "$HOME/.cargo/bin/$BIN_NAME" setup --project "$(pwd)"
@@ -20,12 +33,15 @@ case "$ARCH" in
 esac
 
 if [ -z "$VERSION" ]; then
-  VERSION="$(curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' | head -n 1)"
+  VERSION="$(
+    curl -fsSL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null \
+      | sed -n 's/.*"tag_name": *"\([^"]*\)".*/\1/p' \
+      | head -n 1
+  )"
 fi
 
 if [ -z "$VERSION" ]; then
-  echo "Unable to determine release version. Set VERSION or install from a checkout." >&2
-  exit 1
+  install_from_git
 fi
 
 ASSET="${BIN_NAME}-${OS}-${ARCH}.tar.gz"
