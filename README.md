@@ -21,7 +21,7 @@ Not glamorous. Extremely useful.
 Install it:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yairlevi/aipoor/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/lyair1/aipoor/main/install.sh | sh
 ```
 
 Then, inside the project you are working on, create a handoff:
@@ -96,7 +96,7 @@ Right now it supports:
 Once the repo and releases are published, install it with:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/yairlevi/aipoor/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/lyair1/aipoor/main/install.sh | sh
 ```
 
 What this does:

@@ -2,7 +2,7 @@
 set -eu
 
 BIN_NAME="aipoor"
-REPO="${GITHUB_REPO:-yairlevi/aipoor}"
+REPO="${GITHUB_REPO:-lyair1/aipoor}"
 VERSION="${VERSION:-}"
 
 if [ -f "./Cargo.toml" ] && [ -d "./src" ]; then
