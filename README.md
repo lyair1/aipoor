@@ -108,6 +108,23 @@ What this does:
 4. Installs `aipoor` into your local bin directory.
 5. Runs the setup command for you.
 
+### Publish a release
+
+GitHub Releases are published automatically when you push a tag that starts with `v`:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+```
+
+That workflow builds release tarballs for:
+
+- `aipoor-linux-x86_64.tar.gz`
+- `aipoor-darwin-x86_64.tar.gz`
+- `aipoor-darwin-aarch64.tar.gz`
+
+Those filenames match what `install.sh` expects.
+
 ### Install from source
 
 If you already have the repo locally, install it with Cargo:

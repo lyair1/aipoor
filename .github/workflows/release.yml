@@ -1,0 +1,66 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build ${{ matrix.os }} ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            os: linux
+            arch: x86_64
+          - runner: macos-13
+            os: darwin
+            arch: x86_64
+          - runner: macos-14
+            os: darwin
+            arch: aarch64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build release binary
+        run: cargo build --locked --release
+
+      - name: Package tarball
+        run: |
+          mkdir -p dist
+          cp target/release/aipoor dist/aipoor
+          tar -czf "aipoor-${{ matrix.os }}-${{ matrix.arch }}.tar.gz" -C dist aipoor
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: aipoor-${{ matrix.os }}-${{ matrix.arch }}
+          path: aipoor-${{ matrix.os }}-${{ matrix.arch }}.tar.gz
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: artifacts/**/*.tar.gz
+          generate_release_notes: true
